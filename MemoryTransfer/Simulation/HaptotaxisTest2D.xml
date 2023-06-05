@@ -1,0 +1,255 @@
+<CompuCell3D Revision="20200821" Version="4.2.3">
+   <Potts>
+      
+      <!-- Basic properties of CPM (GGH) algorithm -->
+      <Dimensions x="300" y="75" z="1"/>
+      <Steps>3001</Steps>
+      <Temperature>20.0</Temperature>
+      <NeighborOrder>2</NeighborOrder>
+      <Boundary_y>Periodic</Boundary_y>
+      <NumberOfProcessors>1</NumberOfProcessors>
+      <DebugOutputFrequency>200</DebugOutputFrequency>
+      <!-- 200 px = 600 um, 1 px  = 3 um. Each cell is 15 micron-->
+      
+   </Potts>
+   
+   <Plugin Name="CellType">
+      
+      <!-- Listing all cell types in the simulation -->
+      <CellType TypeId="0" TypeName="Medium"/>
+      <CellType TypeId="1" TypeName="cell"/>
+      <!-- <CellType TypeId="2" TypeName="cell_front"/> -->
+   </Plugin>
+   
+   <Plugin Name="Volume">
+      <VolumeEnergyParameters CellType="cell" LambdaVolume="1" TargetVolume="25"/>
+      <!-- this was 1 -->
+   </Plugin>
+    
+    <Plugin Name="Surface">
+    <SurfaceEnergyParameters CellType="cell" LambdaSurface="1" TargetSurface="20"/>
+   <!-- this was 1.5 -->
+    </Plugin>
+   
+   <Plugin Name="CenterOfMass">
+      <!-- Module tracking center of mass of each cell -->
+   </Plugin>
+   
+   <Plugin Name="PixelTracker">  
+        <!-- Module tracking pixels of each cell -->
+    </Plugin>
+
+   
+   <!-- <Plugin Name="Contact"> -->
+      <!-- <Energy Type1="Medium" Type2="Medium">-3.1</Energy> -->
+      <!-- <Energy Type1="Medium" Type2="cell">-0.5</Energy> -->
+      <!-- <Energy Type1="cell" Type2="cell">-3.1</Energy> -->
+      <!-- <NeighborOrder>4</NeighborOrder> -->
+   <!-- </Plugin> -->
+
+<Plugin Name="AdhesionFlex">
+   
+   <!-- Specification of adhesion energies as a function of cadherin concentration at cell membranes --> 
+
+
+   <!-- Adhesion energy is a function of two cells in ocntact. the functional form is specified by the user --> 
+
+
+   <AdhesionMolecule Molecule="CC"/>
+   <AdhesionMolecule Molecule="CE"/>
+   <AdhesionMolecule Molecule="EE"/>
+   <AdhesionMoleculeDensity CellType="Medium" Density="0.0" Molecule="EE"/>
+   <AdhesionMoleculeDensity CellType="cell" Density="2" Molecule="CC"/>
+   <AdhesionMoleculeDensity CellType="cell" Density="0.5" Molecule="CE"/>
+   <!-- <AdhesionMoleculeDensity CellType="cell_front" Density="0.5" Molecule="CE"/> --> 
+
+   <BindingFormula Name="Binary">
+      <Formula>min(Molecule1,Molecule2)</Formula>
+      <Variables>
+         <AdhesionInteractionMatrix>
+            <BindingParameter Molecule1="CC" Molecule2="CC">1</BindingParameter>
+            <BindingParameter Molecule1="CE" Molecule2="EE">1</BindingParameter>
+            <BindingParameter Molecule1="EE" Molecule2="EE">1</BindingParameter>
+         </AdhesionInteractionMatrix>
+      </Variables>
+   </BindingFormula>
+   <NeighborOrder>4</NeighborOrder>
+</Plugin>
+
+
+  
+   <Plugin Name="ExternalPotential">
+   
+   <!-- External force applied to cell. Each cell type has different force. -->
+   <!-- For more flexible specification of the constraint (done in Python) please use ExternalPotential plugin without specifying per-type parameters -->
+   <!-- Algorithm options are: PixelBased, CenterOfMassBased -->
+   <Algorithm>PixelBased</Algorithm>
+</Plugin>
+
+   
+<Plugin Name="NeighborTracker">
+   
+   <!-- Module tracking neighboring cells of each cell -->
+</Plugin>
+
+      
+   <Steppable Type="ReactionDiffusionSolverFE">
+
+      <DiffusionField Name="phi_field">
+         <DiffusionData>
+            <FieldName>phi_field</FieldName>
+            <DiffusionConstant>0.0</DiffusionConstant>
+            <DecayConstant>0</DecayConstant>
+            <!-- <DiffusionCoefficient CellType="cell">0.0</DiffusionCoefficient> -->
+            
+         </DiffusionData>
+
+        <BoundaryConditions>
+            <Plane Axis="X">
+               <ConstantValue PlanePosition="Min" Value="0.0"/>
+               <ConstantValue PlanePosition="Max" Value="0.0"/>
+            </Plane>
+            <Plane Axis="Y">
+               <Periodic/>
+            </Plane>
+         </BoundaryConditions>
+      </DiffusionField>      
+
+      <DiffusionField Name="gam_field">
+         <DiffusionData>
+            <FieldName>gam_field</FieldName>
+            <DiffusionConstant>0.0</DiffusionConstant>
+            <DecayConstant>0</DecayConstant>
+            
+         </DiffusionData>
+
+        <BoundaryConditions>
+            <Plane Axis="X">
+               <ConstantValue PlanePosition="Min" Value="0.0"/>
+               <ConstantValue PlanePosition="Max" Value="0.0"/>
+            </Plane>
+            <Plane Axis="Y">
+               <Periodic/>
+            </Plane>
+         </BoundaryConditions>
+      </DiffusionField>      
+
+      <DiffusionField Name="psi_field">
+         <DiffusionData>
+            <FieldName>psi_field</FieldName>
+            <DiffusionConstant>0.0</DiffusionConstant>
+            <DecayConstant>0</DecayConstant>
+            <!-- <DiffusionCoefficient CellType="cell">0.0</DiffusionCoefficient> --> 
+            
+         </DiffusionData>
+
+        <BoundaryConditions>
+            <Plane Axis="X">
+               <ConstantValue PlanePosition="Min" Value="0.0"/>
+               <ConstantValue PlanePosition="Max" Value="0.0"/>
+            </Plane>
+            <Plane Axis="Y">
+               <Periodic/>
+            </Plane>
+         </BoundaryConditions>
+      </DiffusionField>      
+
+      <DiffusionField Name="mu_field">
+         <DiffusionData>
+            <FieldName>mu_field</FieldName>
+            <DiffusionConstant>0.0</DiffusionConstant>
+            <DecayConstant>0</DecayConstant>
+            
+         </DiffusionData>
+
+        <BoundaryConditions>
+            <Plane Axis="X">
+               <ConstantValue PlanePosition="Min" Value="0.0"/>
+               <ConstantValue PlanePosition="Max" Value="0.0"/>
+            </Plane>
+            <Plane Axis="Y">
+               <Periodic/>
+            </Plane>
+         </BoundaryConditions>
+      </DiffusionField>      
+
+      <DiffusionField Name="rm_abi">
+         <DiffusionData>
+            <FieldName>rm_abi</FieldName>
+            <DiffusionConstant>0.0</DiffusionConstant>
+            <DecayConstant>0</DecayConstant>
+            
+         </DiffusionData>
+
+        <BoundaryConditions>
+            <Plane Axis="X">
+               <ConstantValue PlanePosition="Min" Value="0.0"/>
+               <ConstantValue PlanePosition="Max" Value="0.0"/>
+            </Plane>
+            <Plane Axis="Y">
+               <Periodic/>
+            </Plane>
+         </BoundaryConditions>
+      </DiffusionField>      
+      
+      
+      <DiffusionField Name="fiber">
+         <DiffusionData>
+            <FieldName>fiber</FieldName>
+            <DiffusionConstant>0.0</DiffusionConstant>
+            <DecayConstant>0</DecayConstant>
+         </DiffusionData>
+
+        <BoundaryConditions>
+            <Plane Axis="X">
+               <ConstantValue PlanePosition="Min" Value="0.0"/>
+               <ConstantValue PlanePosition="Max" Value="0.0"/>
+            </Plane>
+            <Plane Axis="Y">
+               <Periodic/>
+            </Plane>
+         </BoundaryConditions>
+      </DiffusionField>      
+<!-- (CellType==0 ? 0: 1)*(fiber == 0 ? 0:1)*{{r_alpha}}*( ( (psi_field)*(phi_field) - {{sigma}}*( ( {{f0}}/{{f_star}} )^{{n_rate}} )*alpha) >= 0 ? 1:0)*( (psi_field)*(phi_field) - {{sigma}}*( ( {{f0}}/{{f_star}} )^{{n_rate}} )*alpha )       -->
+            <!-- (CellType==0 ? 0: 1)*(fiber == 0 ? 0:1)*{{r_alpha}}*( ( (psi_field)*(phi_field) - ( ( {{f0}}/3.7 )^{{n_rate}} )*alpha) >= 0 ? 1:0)*( (psi_field)*(phi_field) - ( ( {{f0}}/3.7 )^{{n_rate}} )*alpha ) -->
+      <DiffusionField Name="alpha">
+         <DiffusionData>
+            <FieldName>alpha</FieldName>
+            <DiffusionConstant>0.00000000000001</DiffusionConstant>
+            <AdditionalTerm>
+            <![CDATA[
+            (CellType==0 ? 0: 1)*(fiber == 0 ? 0:1)*{{r_alpha}}*( ( (phi_field)*psi_field - ( ( {{f0}}/{{sigma}} )^{{n_rate}} )*alpha) >= 0 ? 1:0)*( (phi_field)*psi_field - ( ( {{f0}}/{{sigma}} )^{{n_rate}} )*alpha )
+            ]]>
+            </AdditionalTerm>
+
+            </DiffusionData>
+
+        <BoundaryConditions>
+            <Plane Axis="X">
+               <ConstantValue PlanePosition="Min" Value="0.0"/>
+               <ConstantValue PlanePosition="Max" Value="0.0"/>
+            </Plane>
+            <Plane Axis="Y">
+               <Periodic/>
+            </Plane>
+         </BoundaryConditions>
+      </DiffusionField>      
+      
+
+   </Steppable>
+
+
+<Steppable Type="UniformInitializer">
+   
+   <!-- Initial layout of cells in the form of rectangular slab -->
+   <Region>
+      <BoxMin x="5" y="0" z="0"/>
+      <BoxMax x="155" y="75" z="1"/>
+      <Gap>0</Gap>
+      <Width>5</Width>
+      <Types>cell</Types>
+   </Region>
+</Steppable>
+    
+   
+</CompuCell3D>

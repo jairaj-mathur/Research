@@ -1,0 +1,45 @@
+{
+    "version":"4.2.3",
+    "parameter_list":{
+        "f0":{            
+            "values":[2.3]
+        },
+        "f_star":{            
+            "values":[4]
+        },
+        "n_rate":{            
+            "values":[2]
+        },
+        "phi_0":{            
+            "values":[0.3]
+        },
+        "r_alpha":{            
+            "values":[0.01]
+        },
+        "r_psi":{            
+            "values":[0.0001]
+        },
+        "r_phi_0":{            
+            "values":[0.5]
+        },
+        "n_f":{            
+            "values":[1]
+        },
+        "n_gamma":{            
+            "values":[2]
+        },
+        "sigma":{            
+            "values":[3]
+        },
+        "half_max_psi":{            
+            "values":[3000]
+        },
+        "n_x":{            
+            "values":[0.2]
+        },
+        "gamma0":{            
+            "values":[0.06]
+        
+        }
+    }
+}
